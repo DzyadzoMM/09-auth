@@ -6,7 +6,7 @@ import { NoteTag } from "@/types/note";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 
 type Props = {
-    params: { slug: string[] }
+  params: Promise<{ id: string }>;
 };
 
 export async function generateMetadata({ params }: Props):Promise<Metadata> {
