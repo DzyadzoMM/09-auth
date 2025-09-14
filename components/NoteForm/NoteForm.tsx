@@ -5,7 +5,7 @@ import { PiFloppyDiskFill } from 'react-icons/pi';
 import { useNoteStore } from '@/lib/store/noteStore';
 import css from './NoteForm.module.css';
 import { useRouter } from 'next/navigation';
-import { createNote } from "@/lib/api";
+import { createNote } from "@/lib/api/clientApi";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { Note } from "../../types/note";
 import type { NoteTag } from "../../types/note";

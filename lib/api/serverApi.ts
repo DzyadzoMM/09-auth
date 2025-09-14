@@ -1,6 +1,6 @@
 
 import { cookies } from 'next/headers';
-import { nextServer } from '../api';
+import { nextServer } from './api';
 import { User } from '@/types/user';
 import { Note } from '@/types/note';
 
@@ -31,6 +31,7 @@ interface FetchResponse {
 
 
 export async function fetchNotes(page: number = 1, search: string = "", perPage: number = 12, tag?: string): Promise<FetchResponse> {
+  const cookieStore = await cookies();
   const response = await nextServer.get<FetchResponse>('/notes',
     { params: { page, search, perPage, tag },
     headers: {
@@ -41,6 +42,7 @@ export async function fetchNotes(page: number = 1, search: string = "", perPage:
 };
 
 export const fetchNoteById = async (id: string) => {
+  const cookieStore = await cookies();
   const response = await nextServer.get<Note>(`/notes/${id}`, {
     headers: {
       Cookie: cookieStore.toString(),
