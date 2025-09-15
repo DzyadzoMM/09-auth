@@ -1,5 +1,3 @@
-// middleware.ts
-
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { parse } from 'cookie';
@@ -21,8 +19,6 @@ export async function middleware(request: NextRequest) {
 
   if (!accessToken) {
     if (refreshToken) {
-      // If accessToken is missing but refreshToken is present, the session must be checked even for public routes,
-      // as the session may remain active, in which case access to public routes must be denied.
 
       const data = await checkServerSession();
       const setCookie = data.headers['set-cookie'];
@@ -41,8 +37,6 @@ export async function middleware(request: NextRequest) {
           if (parsed.refreshToken)
             cookieStore.set('refreshToken', parsed.refreshToken, options);
         }
-        // If the session is still active:
-        // for public routes, redirect to the home page.
         if (isPublicRoute) {
           return NextResponse.redirect(new URL('/', request.url), {
             headers: {
@@ -50,7 +44,6 @@ export async function middleware(request: NextRequest) {
             },
           });
         }
-        // for a private route — allow access
         if (isPrivateRoute) {
           return NextResponse.next({
             headers: {
@@ -60,29 +53,21 @@ export async function middleware(request: NextRequest) {
         }
       }
     }
-    // If there is no refreshToken or session:
-    // public route — allow access
     if (isPublicRoute) {
       return NextResponse.next();
     }
-
-    // private route — redirect to the login page
     if (isPrivateRoute) {
       return NextResponse.redirect(new URL('/sign-in', request.url));
     }
   }
-
-  // If accessToken exists:
-  // public route — redirect to the home page
   if (isPublicRoute) {
     return NextResponse.redirect(new URL('/', request.url));
   }
-  // private route — allow access
   if (isPrivateRoute) {
     return NextResponse.next();
   }
 }
 
 export const config = {
-  matcher: ['/profile/:path*', '/notes/:path*'],
+  matcher: ['/profile/:path*', '/notes/:path*', '/sign-in', '/sign-up'],
 };
